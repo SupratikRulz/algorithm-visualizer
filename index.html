@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm visualizer</title>
+    <style>
+        .bar {
+            width: 5px;
+            display: inline-block;
+            margin: 0 1px;
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Algorithm visualizer</h1>
+    <div>
+        <input type="number" id="dataset-size" class="ipt-dataset-size" placeholder="Dataset size (min 5)" onblur="handleDatasetSizeChange()"/>
+        <input type="number" id="search-number" class="ipt-search-number" placeholder="Enter number for search" onblur="handleSearchNumberChange()"/>
+        <button id="generate-array" class="btn" onclick="generateArray()">Generate Array</button>
+        <button id="linear-search" class="btn" onclick="doLinearSearch()">Linear Search</button>
+        <button id="binary-search" class="btn" onclick="doBinarySearch()">Binary Search</button>
+        <button id="bubble-sort" class="btn" onclick="doBubbleSort()">Bubble Sort</button>
+        <button id="selection-sort" class="btn" onclick="doSelectionSort()">Selection Sort</button>
+    </div>
+
+    <div id="lines-container">
+
+    </div>
+
+    <script>
+        // constants
+
+        const BG_COLOR = 'blue'
+        const COMPARE_COLOR = 'purple'
+        const FOUND_COLOR = 'green'
+        const NOT_FOUND_COLOR = 'red'
+
+
+        // utils
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+    </script>
+
+    <script>
+        // Algorithms for animations
+
+        function getLinearSearchAnimations(searchNumber, array) {
+            var animationArr = []
+            for (var i = 0; i < array.length; ++i) {
+                if (searchNumber === array[i]) {
+                    animationArr.push({
+                        pos: i,
+                        found: true,
+                    })
+
+                    return animationArr
+                } else {
+                    animationArr.push({
+                        pos: i,
+                    })
+                }
+            }
+            animationArr.push({
+                pos: array.length - 1,
+                found: false
+            })
+
+            return animationArr
+        }
+
+
+
+    </script>
+
+    <script>
+        var datasetSize = 5, searchNumber, array = [];
+
+        function handleDatasetSizeChange() {
+            datasetSize = Number(document.getElementById('dataset-size').value) >= 5 ? Number(document.getElementById('dataset-size').value) : 5
+            document.getElementById('dataset-size').value = datasetSize
+        }
+
+        function handleSearchNumberChange() {
+            searchNumber = Number(document.getElementById('search-number').value) >= 5 ? Number(document.getElementById('search-number').value) : 5
+            document.getElementById('search-number').value = searchNumber
+        }
+
+        function generateArray() {
+            var lineContainerElement = document.getElementById('lines-container')
+
+            // Remove Present Children
+            var child = lineContainerElement.lastElementChild;  
+            while (child) { 
+                lineContainerElement.removeChild(child); 
+                child = lineContainerElement.lastElementChild; 
+            }
+            array = []
+
+            // Add new Children
+            for (var i = 0; i < datasetSize; ++i) {
+                var randomNumber = getRandomNumber(5, 500)
+                array.push(randomNumber)
+
+                var lineElement = document.createElement('div')
+                lineElement.className = "bar"
+                lineElement.style.height = randomNumber + 'px'
+                lineContainerElement.appendChild(lineElement)
+            }
+        }
+
+        async function doLinearSearch() {
+            if (!searchNumber) {
+                alert('Enter search number!')
+                document.getElementById('search-number').focus()
+                return
+            }
+
+            if (!array.length) {
+                alert('Generate Array!')
+                document.getElementById('generate-array').focus()
+                return
+            }
+
+            var animationArr = getLinearSearchAnimations(searchNumber, [...array])
+            var lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
+            var previous
+            for (let i = 0; i < animationArr.length; ++i) {
+                let animation = animationArr[i]
+                await sleep(100)
+                
+                if (Number.isInteger(previous)) {
+                    lineContainerChildElements[previous].style.backgroundColor = BG_COLOR
+                }
+
+                if (animation.found === true) {
+                    lineContainerChildElements[animation.pos].style.backgroundColor = FOUND_COLOR
+                    alert('Found on position: ' + animation.pos)
+                    return
+                } else if (animation.found === false) {
+                    lineContainerChildElements[animation.pos].style.backgroundColor = NOT_FOUND_COLOR
+                    alert('Not found!')
+                    return
+                } else {
+                    lineContainerChildElements[animation.pos].style.backgroundColor = COMPARE_COLOR
+                    previous = animation.pos
+                }
+            }
+        }
+
+        async function doBinarySearch() {
+            if (!searchNumber) {
+                alert('Enter search number!')
+                document.getElementById('search-number').focus()
+                return
+            }
+
+            if (!array.length) {
+                alert('Generate Array!')
+                document.getElementById('generate-array').focus()
+                return
+            }
+
+            var lineContainerChildElements = Array.from(document.getElementById('lines-container').children).slice()
+            array.sort((a, b) => a - b)
+            lineContainerChildElements.sort((a, b) => parseInt(a.style.height) - parseInt(b.style.height))
+
+            var lineContainerElement = document.getElementById('lines-container')
+
+            // Remove Present Children
+            var child = lineContainerElement.lastElementChild;  
+            while (child) { 
+                lineContainerElement.removeChild(child); 
+                child = lineContainerElement.lastElementChild; 
+            }
+
+            for (let i = 0; i < array.length; ++i) {
+                lineContainerElement.appendChild(lineContainerChildElements[i])
+            }
+
+            console.log(lineContainerChildElements)
+
+
+        }
+    </script>
+</body>
+</html>
