@@ -77,7 +77,6 @@
             return animationArr
         }
 
-
         function getBinarySearchAnimations(searchNumber, sortedArray) {
             let animationArr =  []
 
@@ -126,7 +125,33 @@
             return animationArr;
         }
 
-
+        function getBubbleSortAnimations(inputArr) {
+            let animationArr = []
+            let len = inputArr.length;
+            let swapped;
+            do {
+                swapped = false;
+                for (let i = 0; i < len - 1; i++) {
+                    animationArr.push({
+                        posI: i,
+                        posJ: i + 1,
+                        status: 'compare',
+                    })
+                    if (inputArr[i] > inputArr[i + 1]) {
+                        animationArr.push({
+                            posI: i,
+                            posJ: i + 1,
+                            status: 'swap',
+                        })  
+                        let tmp = inputArr[i];
+                        inputArr[i] = inputArr[i + 1];
+                        inputArr[i + 1] = tmp;
+                        swapped = true;
+                    }
+                }
+            } while (swapped);
+            return animationArr;
+        }
 
     </script>
 
@@ -279,8 +304,47 @@
 
                 previous = animation
             }
-
         }
+    
+        async function doBubbleSort() {
+            if (!array.length) {
+                alert('Generate Array!')
+                document.getElementById('generate-array').focus()
+                return
+            }
+
+            let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
+            let animationArr = getBubbleSortAnimations(array)
+            let previous
+
+            for (let i = 0; i < animationArr.length; ++i) {
+                await sleep(300)
+                if (previous) {
+                    lineContainerChildElements[previous.posI].style.backgroundColor = BG_COLOR
+                    lineContainerChildElements[previous.posJ].style.backgroundColor = BG_COLOR
+                }
+                const animation = animationArr[i]
+
+                if (animation.status === 'compare') {
+                    lineContainerChildElements[animation.posI].style.backgroundColor = COMPARE_COLOR
+                    lineContainerChildElements[animation.posJ].style.backgroundColor = COMPARE_COLOR
+                } else {
+                    lineContainerChildElements[animation.posI].style.backgroundColor = SELECT_COLOR
+                    lineContainerChildElements[animation.posJ].style.backgroundColor = SELECT_COLOR
+                    const tempHeight = lineContainerChildElements[animation.posI].style.height
+                    lineContainerChildElements[animation.posI].style.height = lineContainerChildElements[animation.posJ].style.height
+                    lineContainerChildElements[animation.posJ].style.height = tempHeight
+                }
+
+                previous = animation
+            }
+
+            if (previous) {
+                lineContainerChildElements[previous.posI].style.backgroundColor = BG_COLOR
+                lineContainerChildElements[previous.posJ].style.backgroundColor = BG_COLOR
+            }
+        }
+
     </script>
 </body>
 </html>
