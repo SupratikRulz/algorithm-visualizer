@@ -78,6 +78,51 @@
         }
 
 
+        function getBinarySearchAnimations(searchNumber, sortedArray) {
+            let animationArr =  []
+
+            let lowIndex = 0
+            let highIndex = sortedArray.length - 1
+            animationArr.push({
+                lowIndex,
+                highIndex,
+                staus: 'compare',
+            })
+            while (lowIndex <= highIndex) {
+                let midIndex = Math.floor((lowIndex + highIndex) / 2)
+                animationArr.push({
+                    midIndex,
+                    status: 'select'
+                })
+                if (sortedArray[midIndex] == searchNumber) {
+                    animationArr.push({
+                        midIndex,
+                        status: 'found'
+                    })
+                    return animationArr
+                } else if (sortedArray[midIndex] < searchNumber) {
+                    lowIndex = midIndex + 1
+                    animationArr.push({
+                        lowIndex,
+                        highIndex,
+                        status: 'compare',
+                    })
+                } else {
+                    highIndex = midIndex - 1
+                    animationArr.push({
+                        lowIndex,
+                        highIndex,
+                        status: 'compare',
+                    })
+                }
+            }
+            animationArr.push({
+                status: 'not-found',
+            })
+            return animationArr;
+        }
+
+
 
     </script>
 
