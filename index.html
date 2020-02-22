@@ -3,21 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algorithm visualizer</title>
+    <title>Algorithm visualizer | Supratik Basu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        body {
+            padding: 32px 64px;
+            color: #2f363f;
+            background-color: rgba(249,250,252, 0.5);;
+        }
         .bar {
             width: 5px;
             display: inline-block;
             margin: 0 1px;
             background-color: blue;
+            transition: height 100ms ease-in;
         }
+
+        h1, h3 {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            background-color:#1f7ae0;
+            border: 1px solid#1f7ae0;
+            color:white;
+            display: inline-block;
+            white-space: nowrap;
+            font-family: "Graphik Web Medium", sans-serif;
+            font-size: 13px;
+            text-align: center;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            border: solid 1px transparent;
+            cursor: pointer;
+            padding: 9px 13px;
+            margin: 0 12px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-transition: -webkit-transform 0.15s ease, -webkit-box-shadow 0.15s ease;
+            transition: -webkit-transform 0.15s ease, -webkit-box-shadow 0.15s ease;
+            -o-transition: box-shadow 0.15s ease, -o-transform 0.15s ease;
+            -moz-transition: transform 0.15s ease, box-shadow 0.15s ease, -moz-transform 0.15s ease, -moz-box-shadow 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, -webkit-transform 0.15s ease, -moz-transform 0.15s ease, -o-transform 0.15s ease, -webkit-box-shadow 0.15s ease, -moz-box-shadow 0.15s ease;
+        }
+
+        .btn:hover {
+            -webkit-transform: translateY(-1px);
+            -moz-transform: translateY(-1px);
+            -ms-transform: translateY(-1px);
+            -o-transform: translateY(-1px);
+            transform: translateY(-1px);
+            -webkit-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.07);
+            -moz-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.07);
+            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.07);
+        }
+
+        .btn:disabled {
+            background-color:#1f7ae077;
+        }
+
+        .ipt {
+            padding: 11px 16px;
+            line-height: 1.3;
+            width: 220px;
+            font-size: 14px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            padding: 12px;
+            border: solid 1px rgba(83, 91, 98, 0.25);
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: none;
+            color:#2f363f;
+            margin: 0 12px;
+        }
+
+        .ipt:first-child {
+            margin: 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #lines-container {
+            margin-top: 64px;
+            min-height: 600px;
+            padding: 32px;
+        }
+
+        /* CSS of toast reference: https://codepen.io/kipp0/pen/pPNrrj */
+        #toast {
+            visibility: hidden;
+            max-width: 50px;
+            height: 50px;
+            /*margin-left: -125px;*/
+            margin: auto;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+
+            position: fixed;
+            z-index: 1;
+            left: 0;right:0;
+            bottom: 30px;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        #toast #toast-img{
+            width: 50px;
+            height: 50px;
+            
+            float: left;
+            
+            padding-top: 16px;
+            padding-bottom: 16px;
+            
+            box-sizing: border-box;
+
+            
+            background-color: #111;
+            color: #fff;
+        }
+
+        #toast-img{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #toast #toast-desc{
+
+            
+            color: #fff;
+        
+            padding: 16px;
+            
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 2s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 4s, fadeout 0.5s 4.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes expand {
+            from {min-width: 50px} 
+            to {min-width: 350px}
+        }
+
+        @keyframes expand {
+            from {min-width: 50px}
+            to {min-width: 350px}
+        }
+        @-webkit-keyframes stay {
+            from {min-width: 350px} 
+            to {min-width: 350px}
+        }
+
+        @keyframes stay {
+            from {min-width: 350px}
+            to {min-width: 350px}
+        }
+        @-webkit-keyframes shrink {
+            from {min-width: 350px;} 
+            to {min-width: 50px;}
+        }
+
+        @keyframes shrink {
+            from {min-width: 350px;} 
+            to {min-width: 50px;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 60px; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 60px; opacity: 0;}
+        }
+
+        /* ***************************** */
+
+
     </style>
 </head>
 <body>
     <h1>Algorithm visualizer</h1>
-    <div>
-        <input type="number" id="dataset-size" class="ipt-dataset-size" placeholder="Dataset size (min 5)" onblur="handleDatasetSizeChange()"/>
-        <input type="number" id="search-number" class="ipt-search-number" placeholder="Enter number for search" onblur="handleSearchNumberChange()"/>
+    <h3>Linear Search, Binary Search, Bubble Sort, Selection Sort</h3>
+    <div class="controls">
+        <input type="number" id="dataset-size" class="ipt" placeholder="Dataset size (min 5)" onblur="handleDatasetSizeChange()"/>
+        <input type="number" id="search-number" class="ipt" placeholder="Enter number for search" onblur="handleSearchNumberChange()"/>
         <button id="generate-array" class="btn" onclick="generateArray()">Generate Array</button>
         <button id="linear-search" class="btn" onclick="doLinearSearch()">Linear Search</button>
         <button id="binary-search" class="btn" onclick="doBinarySearch()">Binary Search</button>
@@ -27,6 +238,11 @@
 
     <div id="lines-container">
 
+    </div>
+
+    <div id="toast">
+        <div id="toast-img"><i id="toast-icon" class="fa fa-2x fa-check-circle" aria-hidden="true" style="color: #d0f0c0;"></i></div>
+        <div id="toast-desc"></div>
     </div>
 
     <script>
@@ -192,11 +408,52 @@
     </script>
 
     <script>
-        let datasetSize = 5, searchNumber, array = [];
+        // Project utitlity functions
+
+        function setInactiveInteractions(active) {
+            document.getElementById('dataset-size').disabled = active
+            document.getElementById('search-number').disabled = active
+            document.getElementById('generate-array').disabled = active
+            document.getElementById('linear-search').disabled = active
+            document.getElementById('binary-search').disabled = active
+            document.getElementById('bubble-sort').disabled = active
+            document.getElementById('selection-sort').disabled = active
+        }
+
+        function enableInteractions() {
+            setInactiveInteractions(false)
+        }
+
+        function disableInteractions() {
+            setInactiveInteractions(true)
+        }
+
+        function toast(type, desc) {
+            let toast = document.getElementById("toast")
+            let toastDesc = document.getElementById("toast-desc")
+            let toastIcon = document.getElementById("toast-icon")
+            
+            toast.className = "show";
+            toastDesc.innerText = desc
+            toastIcon.className = type === 'success' ? 'fa fa-2x fa-check-circle' : 'fa fa-2x fa-exclamation-circle'
+            toastIcon.style.color = type === 'success' ? '#d0f0c0' : '#e32636'
+
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 5000);
+        }
+    </script>
+
+    <script>
+        let datasetSize, searchNumber, array = [];
 
         function handleDatasetSizeChange() {
-            datasetSize = Number(document.getElementById('dataset-size').value) >= 5 ? Number(document.getElementById('dataset-size').value) : 5
-            document.getElementById('dataset-size').value = datasetSize
+
+            datasetSize = Number(document.getElementById('dataset-size').value)
+            if (!datasetSize || datasetSize < 5) {
+                toast('fail', 'Dataset size must be minimum 5')
+                document.getElementById('dataset-size').focus()
+                datasetSize = null
+                return
+            }
         }
 
         function handleSearchNumberChange() {
@@ -205,6 +462,11 @@
         }
 
         function generateArray() {
+            if (!datasetSize || datasetSize < 5) {
+                toast('fail', 'Input dataset size must be minimum 5')
+                document.getElementById('dataset-size').focus()
+                return
+            }
             let lineContainerElement = document.getElementById('lines-container')
 
             // Remove Present Children
@@ -229,16 +491,18 @@
 
         async function doLinearSearch() {
             if (!searchNumber) {
-                alert('Enter search number!')
+                toast('fail', 'Enter search number >= 5!')
                 document.getElementById('search-number').focus()
                 return
             }
 
             if (!array.length) {
-                alert('Generate Array!')
+                toast('fail', 'Generate Array')
                 document.getElementById('generate-array').focus()
                 return
             }
+
+            disableInteractions()
 
             let animationArr = getLinearSearchAnimations(searchNumber, [...array])
             let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
@@ -253,31 +517,36 @@
 
                 if (animation.found === true) {
                     lineContainerChildElements[animation.pos].style.backgroundColor = FOUND_COLOR
-                    alert('Found on position: ' + animation.pos)
-                    return
+                    toast('success', 'Found on position: ' + animation.pos)
+                    break
                 } else if (animation.found === false) {
                     lineContainerChildElements[animation.pos].style.backgroundColor = BG_COLOR
-                    alert('Not found!')
-                    return
+                    toast('fail', 'Not found')
+                    enableInteractions()
+                    break
                 } else {
                     lineContainerChildElements[animation.pos].style.backgroundColor = SELECT_COLOR
                     previous = animation.pos
                 }
             }
+
+            enableInteractions()
         }
 
         async function doBinarySearch() {
             if (!searchNumber) {
-                alert('Enter search number!')
+                toast('fail', 'Enter search number!')
                 document.getElementById('search-number').focus()
                 return
             }
 
             if (!array.length) {
-                alert('Generate Array!')
+                toast('fail', 'Generate Array!')
                 document.getElementById('generate-array').focus()
                 return
             }
+
+            disableInteractions()
 
             let lineContainerChildElements = Array.from(document.getElementById('lines-container').children).slice()
             
@@ -314,7 +583,7 @@
                 if (previous) {
                     if (previous.status === 'compare') {
                         lineContainerChildElements[previous.lowIndex].style.backgroundColor = BG_COLOR
-                        lineContainerChildElements[previous.highIndex].style.backgroundColor = BG_COLOR
+                        previous.highIndex >= 0 && (lineContainerChildElements[previous.highIndex].style.backgroundColor = BG_COLOR)
                     } else {
                         lineContainerChildElements[previous.midIndex].style.backgroundColor = BG_COLOR
                     }
@@ -322,17 +591,17 @@
 
                 if (animation.status === 'found') {
                     lineContainerChildElements[animation.midIndex].style.backgroundColor = FOUND_COLOR
-                    alert('Found at index: ' + animation.midIndex)
-                    return
+                    toast('success', 'Found at index: ' + animation.midIndex)
+                    break
                 } else if (animation.status === 'not-found') {
                     lineContainerChildElements[animation.lowIndex].style.backgroundColor = BG_COLOR
                     lineContainerChildElements[animation.midIndex].style.backgroundColor = BG_COLOR
-                    lineContainerChildElements[animation.highIndex].style.backgroundColor = BG_COLOR
-                    alert('Not Found')
-                    return
+                    animation.highIndex >= 0 && (lineContainerChildElements[animation.highIndex].style.backgroundColor = BG_COLOR)
+                    toast('fail', 'Not Found')
+                    break
                 } else if (animation.status === 'compare') {
                     lineContainerChildElements[animation.lowIndex].style.backgroundColor = COMPARE_COLOR
-                    lineContainerChildElements[animation.highIndex].style.backgroundColor = COMPARE_COLOR
+                    animation.highIndex >= 0 && (lineContainerChildElements[animation.highIndex].style.backgroundColor = COMPARE_COLOR)
                     await sleep(300)
                 } else {
                     lineContainerChildElements[animation.midIndex].style.backgroundColor = SELECT_COLOR
@@ -340,14 +609,18 @@
 
                 previous = animation
             }
+
+            enableInteractions()
         }
     
         async function doBubbleSort() {
             if (!array.length) {
-                alert('Generate Array!')
+                toast('fail', 'Generate Array!')
                 document.getElementById('generate-array').focus()
                 return
             }
+
+            disableInteractions()
 
             let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
             let animationArr = getBubbleSortAnimations(array)
@@ -367,6 +640,7 @@
                 } else {
                     lineContainerChildElements[animation.posI].style.backgroundColor = SELECT_COLOR
                     lineContainerChildElements[animation.posJ].style.backgroundColor = SELECT_COLOR
+                    await sleep(300)
                     const tempHeight = lineContainerChildElements[animation.posI].style.height
                     lineContainerChildElements[animation.posI].style.height = lineContainerChildElements[animation.posJ].style.height
                     lineContainerChildElements[animation.posJ].style.height = tempHeight
@@ -379,14 +653,19 @@
                 lineContainerChildElements[previous.posI].style.backgroundColor = BG_COLOR
                 lineContainerChildElements[previous.posJ].style.backgroundColor = BG_COLOR
             }
+
+            enableInteractions()
+            toast('success', 'Finshed sorting!')
         }
 
         async function doSelectionSort() {
             if (!array.length) {
-                alert('Generate Array!')
+                toast('fail', 'Generate Array!')
                 document.getElementById('generate-array').focus()
                 return
             }
+
+            disableInteractions()
 
             let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
             let animationArr = getSelectionSortAnimations(array)
@@ -407,6 +686,7 @@
                 } else if (animation.status === 'swap') {
                     lineContainerChildElements[animation.min].style.backgroundColor = SELECT_COLOR
                     lineContainerChildElements[animation.i].style.backgroundColor = SELECT_COLOR
+                    await sleep(300)
                     const tempHeight = lineContainerChildElements[animation.min].style.height
                     lineContainerChildElements[animation.min].style.height = lineContainerChildElements[animation.i].style.height
                     lineContainerChildElements[animation.i].style.height = tempHeight
@@ -422,6 +702,9 @@
                 Number.isInteger(previous.j) && (lineContainerChildElements[previous.j].style.backgroundColor = BG_COLOR)
                 Number.isInteger(previous.i) && (lineContainerChildElements[previous.i].style.backgroundColor = BG_COLOR)
             }
+
+            enableInteractions()
+            toast('success', 'Finshed sorting!')
         }
 
     </script>
