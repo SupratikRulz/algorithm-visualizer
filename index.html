@@ -31,7 +31,6 @@
 
     <script>
         // constants
-
         const BG_COLOR = 'blue'
         const COMPARE_COLOR = 'yellow'
         const FOUND_COLOR = 'green'
@@ -39,7 +38,6 @@
 
 
         // utils
-
         function getRandomNumber(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min
         }
@@ -54,8 +52,8 @@
         // Algorithms for animations
 
         function getLinearSearchAnimations(searchNumber, array) {
-            var animationArr = []
-            for (var i = 0; i < array.length; ++i) {
+            let animationArr = []
+            for (let i = 0; i < array.length; ++i) {
                 if (searchNumber === array[i]) {
                     animationArr.push({
                         pos: i,
@@ -194,7 +192,7 @@
     </script>
 
     <script>
-        var datasetSize = 5, searchNumber, array = [];
+        let datasetSize = 5, searchNumber, array = [];
 
         function handleDatasetSizeChange() {
             datasetSize = Number(document.getElementById('dataset-size').value) >= 5 ? Number(document.getElementById('dataset-size').value) : 5
@@ -207,10 +205,10 @@
         }
 
         function generateArray() {
-            var lineContainerElement = document.getElementById('lines-container')
+            let lineContainerElement = document.getElementById('lines-container')
 
             // Remove Present Children
-            var child = lineContainerElement.lastElementChild;  
+            let child = lineContainerElement.lastElementChild;  
             while (child) { 
                 lineContainerElement.removeChild(child); 
                 child = lineContainerElement.lastElementChild; 
@@ -218,11 +216,11 @@
             array = []
 
             // Add new Children
-            for (var i = 0; i < datasetSize; ++i) {
-                var randomNumber = getRandomNumber(5, 500)
+            for (let i = 0; i < datasetSize; ++i) {
+                let randomNumber = getRandomNumber(5, 500)
                 array.push(randomNumber)
 
-                var lineElement = document.createElement('div')
+                let lineElement = document.createElement('div')
                 lineElement.className = "bar"
                 lineElement.style.height = randomNumber + 'px'
                 lineContainerElement.appendChild(lineElement)
@@ -242,9 +240,9 @@
                 return
             }
 
-            var animationArr = getLinearSearchAnimations(searchNumber, [...array])
-            var lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
-            var previous
+            let animationArr = getLinearSearchAnimations(searchNumber, [...array])
+            let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
+            let previous
             for (let i = 0; i < animationArr.length; ++i) {
                 let animation = animationArr[i]
                 await sleep(100)
