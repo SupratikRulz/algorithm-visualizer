@@ -33,9 +33,9 @@
         // constants
 
         const BG_COLOR = 'blue'
-        const COMPARE_COLOR = 'purple'
+        const COMPARE_COLOR = 'yellow'
         const FOUND_COLOR = 'green'
-        const NOT_FOUND_COLOR = 'red'
+        const SELECT_COLOR = 'red'
 
 
         // utils
@@ -83,13 +83,14 @@
 
             let lowIndex = 0
             let highIndex = sortedArray.length - 1
+            let midIndex
             animationArr.push({
                 lowIndex,
                 highIndex,
-                staus: 'compare',
+                status: 'compare',
             })
             while (lowIndex <= highIndex) {
-                let midIndex = Math.floor((lowIndex + highIndex) / 2)
+                midIndex = Math.floor((lowIndex + highIndex) / 2)
                 animationArr.push({
                     midIndex,
                     status: 'select'
@@ -117,6 +118,9 @@
                 }
             }
             animationArr.push({
+                lowIndex,
+                midIndex,
+                highIndex,
                 status: 'not-found',
             })
             return animationArr;
@@ -191,11 +195,11 @@
                     alert('Found on position: ' + animation.pos)
                     return
                 } else if (animation.found === false) {
-                    lineContainerChildElements[animation.pos].style.backgroundColor = NOT_FOUND_COLOR
+                    lineContainerChildElements[animation.pos].style.backgroundColor = BG_COLOR
                     alert('Not found!')
                     return
                 } else {
-                    lineContainerChildElements[animation.pos].style.backgroundColor = COMPARE_COLOR
+                    lineContainerChildElements[animation.pos].style.backgroundColor = SELECT_COLOR
                     previous = animation.pos
                 }
             }
@@ -231,12 +235,50 @@
 
             // Append the sorted childs
             for (let i = 0; i < array.length; ++i) {
-                lineContainerElement.appendChild(lineContainerChildElements[i])
+                let lineElement = document.createElement('div')
+                lineElement.className = "bar"
+                lineElement.style.height = array[i] + 'px'
+                lineContainerElement.appendChild(lineElement)
             }
 
             await sleep(1000)
 
             let animationArr = getBinarySearchAnimations(searchNumber, array)
+            let previous
+            lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
+
+            for (let i = 0; i < animationArr.length; ++i) {
+                const animation = animationArr[i]
+                await sleep(300)
+                if (previous) {
+                    if (previous.status === 'compare') {
+                        lineContainerChildElements[previous.lowIndex].style.backgroundColor = BG_COLOR
+                        lineContainerChildElements[previous.highIndex].style.backgroundColor = BG_COLOR
+                    } else {
+                        lineContainerChildElements[previous.midIndex].style.backgroundColor = BG_COLOR
+                    }
+                }
+
+                if (animation.status === 'found') {
+                    lineContainerChildElements[animation.midIndex].style.backgroundColor = FOUND_COLOR
+                    alert('Found at index: ' + animation.midIndex)
+                    return
+                } else if (animation.status === 'not-found') {
+                    lineContainerChildElements[animation.lowIndex].style.backgroundColor = BG_COLOR
+                    lineContainerChildElements[animation.midIndex].style.backgroundColor = BG_COLOR
+                    lineContainerChildElements[animation.highIndex].style.backgroundColor = BG_COLOR
+                    alert('Not Found')
+                    return
+                } else if (animation.status === 'compare') {
+                    lineContainerChildElements[animation.lowIndex].style.backgroundColor = COMPARE_COLOR
+                    lineContainerChildElements[animation.highIndex].style.backgroundColor = COMPARE_COLOR
+                    await sleep(300)
+                } else {
+                    lineContainerChildElements[animation.midIndex].style.backgroundColor = SELECT_COLOR
+                }
+
+                previous = animation
+            }
 
         }
     </script>
