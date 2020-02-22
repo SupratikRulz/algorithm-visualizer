@@ -153,6 +153,44 @@
             return animationArr;
         }
 
+        function getSelectionSortAnimations(inputArr) {
+            let animationArr = []
+            let len = inputArr.length;
+            for (let i = 0; i < len; i++) {
+                let min = i
+                animationArr.push({
+                    min: i,
+                    status: 'select-min',
+                })
+                for (let j = i + 1; j < len; j++) {
+                    animationArr.push({
+                        min,
+                        j,
+                        status: 'compare'
+                    })
+                    if (inputArr[min] > inputArr[j]) {
+                        animationArr.push({
+                            min: j,
+                            status: 'select-min',
+                        })
+                        min = j
+                    }
+                }
+
+                if (min !== i) {
+                    animationArr.push({
+                        min,
+                        i,
+                        status: 'swap'
+                    })
+                    let tmp = inputArr[i]
+                    inputArr[i] = inputArr[min]
+                    inputArr[min] = tmp
+                }
+            }
+            return animationArr
+        }
+
     </script>
 
     <script>
@@ -342,6 +380,49 @@
             if (previous) {
                 lineContainerChildElements[previous.posI].style.backgroundColor = BG_COLOR
                 lineContainerChildElements[previous.posJ].style.backgroundColor = BG_COLOR
+            }
+        }
+
+        async function doSelectionSort() {
+            if (!array.length) {
+                alert('Generate Array!')
+                document.getElementById('generate-array').focus()
+                return
+            }
+
+            let lineContainerChildElements = Array.from(document.getElementById('lines-container').children)
+            let animationArr = getSelectionSortAnimations(array)
+            let previous
+
+            for (let i = 0; i < animationArr.length; ++i) {
+                await sleep(300)
+                if (previous) {
+                    Number.isInteger(previous.min) && (lineContainerChildElements[previous.min].style.backgroundColor = BG_COLOR)
+                    Number.isInteger(previous.j) && (lineContainerChildElements[previous.j].style.backgroundColor = BG_COLOR)
+                    Number.isInteger(previous.i) && (lineContainerChildElements[previous.i].style.backgroundColor = BG_COLOR)
+                }
+                const animation = animationArr[i]
+
+                if (animation.status === 'compare') {
+                    lineContainerChildElements[animation.min].style.backgroundColor = COMPARE_COLOR
+                    lineContainerChildElements[animation.j].style.backgroundColor = COMPARE_COLOR
+                } else if (animation.status === 'swap') {
+                    lineContainerChildElements[animation.min].style.backgroundColor = SELECT_COLOR
+                    lineContainerChildElements[animation.i].style.backgroundColor = SELECT_COLOR
+                    const tempHeight = lineContainerChildElements[animation.min].style.height
+                    lineContainerChildElements[animation.min].style.height = lineContainerChildElements[animation.i].style.height
+                    lineContainerChildElements[animation.i].style.height = tempHeight
+                } else {
+                    lineContainerChildElements[animation.min].style.backgroundColor = FOUND_COLOR
+                }
+
+                previous = animation
+            }
+
+            if (previous) {
+                Number.isInteger(previous.min) && (lineContainerChildElements[previous.min].style.backgroundColor = BG_COLOR)
+                Number.isInteger(previous.j) && (lineContainerChildElements[previous.j].style.backgroundColor = BG_COLOR)
+                Number.isInteger(previous.i) && (lineContainerChildElements[previous.i].style.backgroundColor = BG_COLOR)
             }
         }
 
