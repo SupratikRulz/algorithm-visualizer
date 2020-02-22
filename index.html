@@ -169,25 +169,29 @@
                 return
             }
 
-            var lineContainerChildElements = Array.from(document.getElementById('lines-container').children).slice()
+            let lineContainerChildElements = Array.from(document.getElementById('lines-container').children).slice()
+            
+            // Sort array and dom elements before performing binary search
             array.sort((a, b) => a - b)
             lineContainerChildElements.sort((a, b) => parseInt(a.style.height) - parseInt(b.style.height))
 
-            var lineContainerElement = document.getElementById('lines-container')
+            let lineContainerElement = document.getElementById('lines-container')
 
             // Remove Present Children
-            var child = lineContainerElement.lastElementChild;  
+            let child = lineContainerElement.lastElementChild;
             while (child) { 
                 lineContainerElement.removeChild(child); 
                 child = lineContainerElement.lastElementChild; 
             }
 
+            // Append the sorted childs
             for (let i = 0; i < array.length; ++i) {
                 lineContainerElement.appendChild(lineContainerChildElements[i])
             }
 
-            console.log(lineContainerChildElements)
+            await sleep(1000)
 
+            let animationArr = getBinarySearchAnimations(searchNumber, array)
 
         }
     </script>
